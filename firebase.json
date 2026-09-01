@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "vyron-site",
     "public": ".",
     "ignore": [
       "firebase.json",
