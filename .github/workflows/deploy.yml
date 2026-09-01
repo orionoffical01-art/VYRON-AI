@@ -14,5 +14,5 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
           projectId: vyron-ai-c5fe9
-          site: vyron-site
+          target: vyron-site
           
