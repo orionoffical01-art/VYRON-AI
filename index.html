@@ -182,12 +182,12 @@
         .user .avatar {
             background-color: #0284c7;
             color: white;
-            order: 2;
+            order: 2; /* Avatar sağda */
         }
         .ai .avatar {
             background-color: #334155;
             color: var(--accent-blue);
-            order: 1;
+            order: 1; /* Avatar solda */
         }
         /* METİN BALONCULARI (CHAT BUBBLES) */
         .message-bubble {
@@ -203,14 +203,14 @@
             background-color: var(--user-bubble);
             color: #ffffff;
             border-top-right-radius: 0.2rem;
-            order: 1;
+            order: 1; /* Balon solda, avatar sağda olacak şekilde */
         }
         .ai .message-bubble {
             background-color: var(--ai-bubble);
             color: var(--text-primary);
             border: 1px solid var(--ai-border);
             border-top-left-radius: 0.2rem;
-            order: 2;
+            order: 2; /* Balon sağda, avatar solda olacak şekilde */
         }
         .ai .message-bubble pre {
             background: #090d16;
@@ -404,7 +404,7 @@
     </div>
 
     <script>
-        // API anahtarın koda doğrudan eklendi
+        // API anahtarın koda eklendi (Not: Gemini API key'lerinin "AIza" ile başlaması gerekir, AQ ile başlayanlar bu uç noktada hata verebilir)
         const API_KEY = "AQ.Ab8RN6Ib8dtU6OLCSXfAoORUoz2P2brNdGz8sPFzgoCkxrqLJg";
         let selectedModel = localStorage.getItem('vyron_model') || 'gemini-2.0-flash';
 
@@ -522,7 +522,7 @@
             aiWrapper.className = 'message-wrapper ai';
             aiWrapper.innerHTML = `
                 <div class="avatar">V</div>
-                <div class="message-bubble" id="loading-bubble">...</div>
+                <div class="message-bubble" id="loading-bubble">Düşünüyor...</div>
             `;
             chatContainer.appendChild(aiWrapper);
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -537,16 +537,22 @@
                 });
 
                 const data = await response.json();
+                const loadingBubble = document.getElementById("loading-bubble");
                 
                 if (data.candidates && data.candidates[0].content) {
                     const aiResponseText = data.candidates[0].content.parts[0].text;
                     currentChat.messages.push({ role: 'ai', content: aiResponseText });
                     saveAndRender();
-                } else {
-                    document.getElementById("loading-bubble").remove();
+                } else if (loadingBubble) {
+                    loadingBubble.innerText = "Yapay zekadan yanıt alınamadı. (API anahtarınızı kontrol edin)";
+                    loadingBubble.id = "";
                 }
             } catch (err) {
-                document.getElementById("loading-bubble").remove();
+                const loadingBubble = document.getElementById("loading-bubble");
+                if (loadingBubble) {
+                    loadingBubble.innerText = "Bağlantı hatası oluştu.";
+                    loadingBubble.id = "";
+                }
             }
 
             sendBtn.disabled = false;
